@@ -1,4 +1,4 @@
-package client;
+package serveur;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,38 +8,22 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 import java.lang.*;
-import javazoom.jl.player.Player;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.util.regex.*;
-import java.text.ParseException;
-import image.*;
-
 
 public class Runrecevoir implements Runnable{
-  
+    ServerSocket serveurSocket ;
     Socket clientSocket ;
     BufferedReader in;
     PrintWriter out;
-    Player jlPlayer;
-    String message = new String();
-    Fichier file = new Fichier();
-    int recue=0;
     Runenvoi run;
-    int h=0;
-    public void setRunenvoi(Runenvoi r){
-        run=r;
-    }
-    public Runenvoi getRunenvoi(){
-        return run;
-    }
-    public void setRecue(int r){
-        recue=r;
-    }
-    public int getRecue(){
-        return recue;
-    }
 
+    String message = new String(" ");
+    
+    public void setServeurSocket(ServerSocket ser){
+        serveurSocket=ser;
+    }
+    public ServerSocket getServeurSocket(){
+        return serveurSocket;
+    }
     public void setClientSocket(Socket cli){
         clientSocket=cli;
     }
@@ -64,60 +48,38 @@ public class Runrecevoir implements Runnable{
     public String getMessage(){
         return message;
     }
-    public Runrecevoir(Socket so,BufferedReader bf,PrintWriter pf){
+
+    public void setRunenvoi(Runenvoi r){
+        run=r;
+    }
+    public Runenvoi getRunenvoi(){
+        return run;
+    }
+    public Runrecevoir(){}
+    public Runrecevoir(ServerSocket s,Socket so,BufferedReader bf,PrintWriter pf ){
+        setServeurSocket(s);
         setClientSocket(so);
         setIn(bf);
         setOut(pf);
     }
-    
     public void run() { 
+      
         try {
             setMessage(getIn().readLine());
-            
             //tant que le client est connecté
             while(getMessage()!=null){
-                if(FindCaractInWord(getMessage())==true){
-                    System.out.println(getMessage());// important
-                }
-                if(getMessage().compareTo("ListeMusic.txt")==0){
-                    GetListeMusique recevoirFile = new GetListeMusique(getClientSocket(),"ListeMusic.txt");
-                    try {
-                        recevoirFile.receiveFile();
-                    } catch (Exception e) {
-                       System.out.println(e);
-                    }
-                    ShowListe show = new ShowListe("ListeMusic.txt",new Fenetre(getRunenvoi(),this));
-                }
-                else if(FindCaractInWord(getMessage())==false){
-                    if(h==0){
-                        RecevoirFile recevoirFile = new RecevoirFile(getClientSocket(),"Ficher.mp3");
-                    try {
-                        recevoirFile.receiveFile();
-                    } catch (Exception e) {
-                       System.out.println(e);
-                    }
-                        h++;
-                    }
-                }
-                setMessage(getIn().readLine());
+                System.out.println("Client : "+getMessage());
+                setMessage(getIn().readLine());//miandri an'le valeur ni printenle client izi vo mi excetuter an'le code ambany 
+                System.out.println("message"+getMessage());
             }
             //sortir de la boucle si le client a déconecté
-            System.out.println("Serveur déconecté");
+            System.out.println("Client déconecté");
             //fermer le flux et la session socket
             getOut().close();
             getClientSocket().close();
+            getServeurSocket().close();
             } catch (IOException e) {
                     e.printStackTrace();
-        }
-    }
-    public static Boolean FindCaractInWord(String word){
-        Pattern pattern = Pattern.compile("[a-zA-Z]");
-        Matcher  Finderdefaut = pattern.matcher(word);
-        if(Finderdefaut.find()==true){ 
-            return true;
-        }
-        else{
-            return false;
         }
     }
 }
