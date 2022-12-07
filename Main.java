@@ -1,43 +1,41 @@
-package client;
+package serveur;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
-import client.*;
-import image.*;
-import java.lang.*;
-import client.*;
+import serveur.*;
 
-public class Main{
-
-    public static void main(String[] test) {
+public class Main {
  
-        Socket clientSocket ;
-        BufferedReader in;
-        PrintWriter out;
-        Scanner sc=new Scanner(System.in);
-     
-            try {
-                    clientSocket = new Socket("192.168.95.1",1780);
-                    out = new PrintWriter(clientSocket.getOutputStream());
-                    in = new BufferedReader (new InputStreamReader (clientSocket.getInputStream()));
-                   
-                    Runenvoi en = new Runenvoi(out,sc);
-                    Runrecevoir rec = new Runrecevoir(clientSocket,in,out);
-                    rec.setRunenvoi(en);
-                    en.setRunrecevoir(rec);
-                    Fenetre frame = new Fenetre(en,rec);
-                    
-                        Thread envoi= new Thread(en) ;
-                            envoi.start();
-                        Thread recevoir= new Thread(rec);
-                        recevoir.start();
+ public static void main(String[] test) {
+ 
+    ServerSocket serveurSocket ;
+    Socket clientSocket ;
+    BufferedReader in;//mamaki amin'ny ligne de commanden'le client
+    PrintWriter out;//manoratra amn'ny ligne de commande ny le client 
+    Scanner sc=new Scanner(System.in);
+    String messageserveur=new String();
+ 
+        try {
+            	serveurSocket = new ServerSocket(1780);
+                clientSocket = serveurSocket.accept();
+                System.out.println("client connecter");
+                out = new PrintWriter(clientSocket.getOutputStream());
+                in = new BufferedReader (new InputStreamReader (clientSocket.getInputStream()));
+                Runenvoi run = new Runenvoi(serveurSocket,clientSocket,out,sc,in);
+                Runrecevoir run1 = new Runrecevoir(serveurSocket,clientSocket,in,out);
+                run.setRunrecevoir(run1);
+                run1.setRunenvoi(run);
 
-                }catch (IOException e) {
-                    e.printStackTrace();
-                }
-           
-        }
+            Thread envoi= new Thread(run) ;
+            envoi.start();
+            Thread recevoir= new Thread(run1);
+            recevoir.start();
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+    }
 }
