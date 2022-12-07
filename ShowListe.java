@@ -18,6 +18,14 @@ public class ShowListe extends JFrame{
     JPanel contentG = new JPanel();
     JPanel Liste= new JPanel();
     Fenetre frame;
+    String VideoAction = new String();
+    public void setVideoAction(String a){
+        VideoAction=a;
+    }
+    public String getVideoAction(){
+        return VideoAction;
+    }
+    
     public void setFrame(Fenetre fr){
         frame=fr;
     }

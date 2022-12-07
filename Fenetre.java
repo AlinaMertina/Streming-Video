@@ -49,7 +49,7 @@ public class Fenetre extends JFrame{
         return button3;
     }
     public Fenetre(Runenvoi run,Runrecevoir rec){
-
+       
         setRecevoirMessage(rec);
         setEnvoiMessage(run);
 

@@ -9,6 +9,7 @@ import image.*;
 import java.util.TimerTask;
 import java.util.Timer;
 import client.*;
+import java.io.File;
 
 public class Ecouteur implements MouseListener {
     Fenetre frame;
@@ -23,13 +24,27 @@ public class Ecouteur implements MouseListener {
     }
     public void mouseClicked(MouseEvent e){
         if(e.getSource()==frame.getMusic()){
+            frame.dispose();
            frame.getEnvoiMessage().setMessage("musique");
-           frame.dispose();
         }  
         if(e.getSource()==frame.getVideo()){
-           
+            frame.dispose();
+            frame.getEnvoiMessage().setMessage("video");
+            
+            try {
+                File fichier=new File("Video.mp4");
+                if(fichier.exists()){
+                    System.gc();
+                    Thread.sleep(1000);
+                    fichier.delete();
+                }
+            } catch (Exception el) {
+              System.out.println(el);
+            }
         }  
         if(e.getSource()==frame.getImage()){
+            frame.dispose();
+            frame.getEnvoiMessage().setMessage("image");
            
         }  
     }
