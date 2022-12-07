@@ -25,6 +25,7 @@ public class EcouterListeChoix implements MouseListener {
         for(int i=0;i<frame.getButton().size();i++){
             if(e.getSource()==frame.getButton().get(i)){
                 frame.getFrame().getEnvoiMessage().setMessage(frame.getButton().get(i).getText());
+                frame.dispose();
             }  
         }
     }
